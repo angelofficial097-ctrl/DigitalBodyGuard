@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Digital Bodyguard | Tu aliado tecnológico</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg: #03070f;
+  --bg2: #07122a;
+  --silver: #b9c7d9;
+  --silver2: #cfdef5;
+  --silver-dark: #7c8aa0;
+  --accent: #1e4b8f;
+  --white: #f0f4fa;
+  --muted: #8a9bb5;
+  --border: rgba(30,75,143,.25);
+  --border2: rgba(185,199,217,.45);
+  --card: rgba(255,255,255,.025);
+  --nav: 70px;
+  --ff: 'Outfit', sans-serif;
+  --ffd: 'Cormorant Garamond', serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--white);font-family:var(--ff);overflow-x:hidden;}
+a{text-decoration:none;}
+img{max-width:100%;display:block;}
+
+/* ADMIN PANEL */
+#admin-overlay{
+  display:none; position:fixed; inset:0; background:rgba(2,7,18,.96); backdrop-filter:blur(10px);
+  z-index:1000; align-items:center; justify-content:center;
+}
+.admin-box{
+  background:var(--bg2); border:1px solid var(--border2); border-radius:24px;
+  padding:2rem; width:380px; text-align:center;
+}
+.admin-input{
+  width:100%; background:rgba(255,255,255,.06); border:1px solid var(--border);
+  border-radius:12px; padding:.8rem; color:white; margin:.5rem 0;
+  font-family:var(--ff); font-size:.88rem; outline:none;
+}
+.admin-input:focus{ border-color:var(--silver); }
+.login-btn, .adm-btn{
+  background:linear-gradient(135deg,var(--silver),var(--silver-dark));
+  color:#03070f; border:none; padding:.7rem; border-radius:40px;
+  font-weight:bold; cursor:pointer; width:100%; margin-top:.5rem;
+  font-family:var(--ff);
+}
+.adm-close{ background:none; border:none; color:var(--muted); float:right; font-size:1.3rem; cursor:pointer; }
+.adm-section{ margin-bottom:1.5rem; border-bottom:1px solid rgba(255,255,255,.05); padding-bottom:1rem; text-align:left; }
+.adm-section h3{ color:var(--silver2); margin-bottom:.8rem; font-size:.9rem; }
+.adm-section label{ font-size:.72rem; color:var(--silver-dark); letter-spacing:.06em; display:block; margin:.5rem 0 .2rem; }
+.error-msg{ color:#e0a0a0; font-size:.75rem; margin-top:.5rem; }
+.admin-note{ font-size:.68rem; color:var(--muted); margin-top:.3rem; }
+
+/* NAV */
+nav{
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  height:var(--nav); display:flex; align-items:center; justify-content:space-between;
+  padding:0 5%; background:rgba(3,7,15,.94); backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-ring{
+  width:42px;height:42px;border-radius:10px;
+  background:linear-gradient(135deg,#1d4ed8,#0a2a6e);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 14px rgba(29,78,216,.4);
+}
+.logo-ring svg{ width:22px;height:22px; }
+.logo-text strong{ font-family:var(--ffd); font-size:1.1rem; color:var(--silver2); letter-spacing:.04em; display:block; line-height:1.1; }
+.logo-text span{ font-size:.6rem; color:#60a5fa; letter-spacing:.1em; text-transform:uppercase; }
+.nav-links{display:flex;gap:1.8rem;list-style:none;}
+.nav-links a{color:var(--muted);font-size:.83rem; transition:color .2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--silver2);}
+.nav-cta{
+  background:linear-gradient(135deg,var(--silver),var(--silver-dark));
+  color:#03070f; padding:.5rem 1.4rem; border-radius:50px;
+  box-shadow:0 0 16px rgba(185,199,217,.3); font-weight:600; font-size:.83rem;
+  display:inline-flex; align-items:center; gap:.5rem;
+}
+.nav-cta::before{
+  content:"🛡️";
+  font-size:.85rem;
+}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.3rem;}
+.burger span{width:22px;height:1.5px;background:var(--silver2);display:block;}
+.mob-nav{display:none;position:fixed;top:var(--nav);left:0;right:0;background:rgba(3,7,15,.97);padding:1.5rem;flex-direction:column;gap:1rem;z-index:199;border-bottom:1px solid var(--border);}
+.mob-nav a{ color:var(--muted); font-size:.95rem; padding:.4rem 0; border-bottom:1px solid rgba(255,255,255,.05); }
+
+/* HERO */
+#inicio{
+  min-height:100vh; padding:calc(var(--nav) + 70px) 5% 80px;
+  display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;
+  background:radial-gradient(ellipse 60% 80% at 75% 40%,rgba(30,75,143,.45) 0%,transparent 65%), var(--bg);
+  position:relative; overflow:hidden;
+}
+#inicio::before{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(rgba(29,78,216,.03) 1px,transparent 1px),
+              linear-gradient(90deg,rgba(29,78,216,.03) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+.hero-eyebrow{
+  display:inline-flex; align-items:center; gap:.5rem;
+  border:1px solid var(--border2); border-radius:50px;
+  padding:.3rem .9rem; font-size:.72rem; color:var(--silver); margin-bottom:1.4rem;
+}
+.hero-eyebrow::before{ content:''; width:6px; height:6px; border-radius:50%; background:#60a5fa; animation:blink 2s infinite; }
+@keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
+h1.hero-title{ font-family:var(--ffd); font-size:clamp(2.6rem,5.5vw,4.2rem); color:var(--silver2); line-height:1.1; margin-bottom:.6rem; }
+h1.hero-title span{ color:#60a5fa; }
+.hero-tagline{ font-family:var(--ffd); font-size:1.3rem; color:rgba(240,244,250,.6); margin-bottom:1rem; }
+.hero-desc{ color:var(--muted); line-height:1.75; margin-bottom:2rem; max-width:450px; font-size:.93rem; }
+.hero-actions{ display:flex; gap:1rem; flex-wrap:wrap; }
+
+/* SHIELD VISUAL - sin línea de escaneo */
+.shield-wrap{
+  display:flex; align-items:center; justify-content:center;
+  animation:float 6s ease-in-out infinite;
+}
+@keyframes float{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-14px);} }
+.shield-outer{
+  position:relative; width:300px; height:340px;
+  display:flex; align-items:center; justify-content:center;
+}
+.shield-ring-1{ position:absolute; inset:0; border-radius:50% 50% 44% 44%/58% 58% 42% 42%; border:1px solid rgba(185,199,217,.15); }
+.shield-ring-2{ position:absolute; inset:20px; border-radius:50% 50% 44% 44%/58% 58% 42% 42%; border:1px solid rgba(185,199,217,.08); }
+.shield-body{
+  position:absolute; inset:40px;
+  border-radius:50% 50% 44% 44%/58% 58% 42% 42%;
+  background:linear-gradient(160deg,rgba(29,78,216,.2) 0%,rgba(3,7,15,.95) 70%);
+  border:1px solid rgba(185,199,217,.3);
+  box-shadow:0 0 40px rgba(29,78,216,.15), inset 0 0 24px rgba(29,78,216,.05);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.7rem;
+}
+.shield-body svg{ filter:drop-shadow(0 0 14px rgba(96,165,250,.7)); }
+.shield-brand{ font-family:var(--ffd); font-size:1rem; font-weight:600; color:var(--silver2); letter-spacing:.1em; text-transform:uppercase; }
+.shield-sub{ font-size:.6rem; color:#1d4ed8; letter-spacing:.14em; text-transform:uppercase; }
+.shield-node{
+  position:absolute; width:8px; height:8px; border-radius:50%;
+  background:var(--silver); box-shadow:0 0 8px var(--silver);
+}
+
+/* SECCIONES */
+.section{ padding:90px 5%; }
+.section.dark{ background:var(--bg2); }
+.sec-label{ font-size:.7rem; letter-spacing:.14em; color:var(--silver); margin-bottom:.6rem; text-transform:uppercase; }
+.sec-title{ font-family:var(--ffd); font-size:clamp(1.9rem,3.5vw,2.8rem); color:var(--white); margin-bottom:.5rem; }
+hr.divider{ border:none; height:1px; background:linear-gradient(90deg,transparent,var(--border2),transparent); margin:0 5%; }
+
+.btn{ display:inline-flex; align-items:center; padding:.75rem 2rem; border-radius:50px; font-weight:600; cursor:pointer; gap:.5rem; font-family:var(--ff); text-decoration:none; font-size:.88rem; transition:all .2s; border:none; }
+.btn.primary{ background:linear-gradient(135deg,var(--silver),var(--silver-dark)); color:#03070f; box-shadow:0 0 18px rgba(185,199,217,.3); }
+.btn.primary:hover{ transform:translateY(-2px); box-shadow:0 0 30px rgba(185,199,217,.4); }
+.btn.ghost{ background:transparent; border:1px solid var(--border2); color:var(--silver2); }
+.btn.ghost:hover{ background:rgba(185,199,217,.06); transform:translateY(-2px); }
+.btn.blue{ background:linear-gradient(135deg,#1d4ed8,#0a2a6e); color:#fff; box-shadow:0 0 18px rgba(29,78,216,.3); }
+.btn.wa{ background:linear-gradient(135deg,#22c55e,#16a34a); color:#fff; }
+
+/* SERVICIOS */
+.services-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.4rem; margin-top:2.5rem; }
+.svc-card{
+  background:var(--card); border:1px solid var(--border); border-radius:20px; padding:1.8rem;
+  transition:border-color .3s, transform .3s;
+}
+.svc-card:hover{ border-color:var(--border2); transform:translateY(-4px); }
+.svc-icon{ width:48px; height:48px; border-radius:12px; background:rgba(29,78,216,.15); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-bottom:1.2rem; }
+.svc-title{ font-family:var(--ffd); font-size:1.15rem; color:var(--silver2); margin-bottom:.5rem; }
+.svc-desc{ font-size:.85rem; color:var(--muted); line-height:1.75; }
+
+/* PLANES */
+.plans-wrap{ display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:1.5rem; margin-top:2.5rem; max-width:960px; margin-left:auto; margin-right:auto; }
+.plan{ background:var(--card); border:1px solid var(--border); border-radius:24px; padding:2rem; position:relative; }
+.plan.featured{ border-color:var(--border2); box-shadow:0 8px 32px rgba(0,0,0,.35); }
+.plan-star{ position:absolute; top:-13px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,var(--silver),var(--silver-dark)); color:#03070f; font-size:.7rem; padding:.3rem 1rem; border-radius:50px; font-weight:bold; white-space:nowrap; }
+.plan-name{ font-family:var(--ffd); font-size:1.4rem; color:var(--silver2); margin-bottom:.4rem; }
+.plan-price{ font-size:2.6rem; font-weight:800; color:var(--white); line-height:1; }
+.plan-price sub{ font-size:.9rem; font-weight:400; color:var(--muted); }
+.plan-desc{ font-size:.82rem; color:var(--muted); margin:1rem 0 1.2rem; line-height:1.7; }
+.plan-perks{ list-style:none; margin-bottom:1.6rem; }
+.plan-perks li{ font-size:.85rem; color:var(--muted); padding:.4rem 0; display:flex; gap:.6rem; align-items:center; border-bottom:1px solid rgba(255,255,255,.04); }
+.plan-perks li:last-child{ border-bottom:none; }
+.plan-perks li::before{ content:'✓'; color:var(--silver2); font-weight:700; flex-shrink:0; }
+
+/* PROCESO */
+.process-steps{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:2rem; margin-top:2.5rem; }
+.step{ text-align:center; }
+.step-num{ width:60px; height:60px; border-radius:50%; background:rgba(29,78,216,.12); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-family:var(--ffd); font-size:1.5rem; font-weight:700; color:var(--silver2); margin:0 auto 1rem; }
+.step-title{ font-family:var(--ffd); font-size:1rem; color:var(--white); margin-bottom:.4rem; }
+.step-desc{ font-size:.8rem; color:var(--muted); line-height:1.7; }
+
+/* CONTACTO */
+.contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:4rem; margin-top:2.5rem; align-items:start; }
+.contact-info-label{ font-size:.68rem; color:#60a5fa; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.25rem; }
+.contact-info-val{ font-size:.95rem; color:var(--white); margin-bottom:1.6rem; }
+.contact-info-val a{ color:var(--white); }
+.social-redes-label{ font-family:var(--ffd); font-size:1.05rem; color:var(--silver2); margin-bottom:.4rem; }
+.social-redes-sub{ font-size:.8rem; color:var(--muted); margin-bottom:1rem; }
+.social-icons-row{ display:flex; gap:.9rem; flex-wrap:wrap; }
+.soc-icon-a{
+  display:flex; align-items:center; justify-content:center;
+  width:50px; height:50px; border-radius:50%;
+  text-decoration:none; transition:all .2s;
+}
+.soc-icon-a:hover{ transform:translateY(-3px); }
+.wa-box{ margin-top:2rem; background:rgba(34,197,94,.07); border:1px solid rgba(34,197,94,.2); border-radius:16px; padding:1.4rem; }
+.wa-box h4{ color:var(--white); margin-bottom:.3rem; font-size:.93rem; }
+.wa-box p{ font-size:.8rem; color:var(--muted); margin-bottom:1rem; line-height:1.65; }
+.contact-form-card{ background:var(--card); border:1px solid var(--border); border-radius:20px; padding:2rem; }
+.form-title{ font-family:var(--ffd); font-size:1.1rem; color:var(--silver2); margin-bottom:.3rem; }
+.form-sub{ font-size:.78rem; color:var(--muted); margin-bottom:1.4rem; }
+.fg{ margin-bottom:1rem; }
+.fg label{ display:block; font-size:.68rem; color:#60a5fa; letter-spacing:.08em; text-transform:uppercase; margin-bottom:.3rem; }
+.fg input, .fg select, .fg textarea{
+  width:100%; background:rgba(255,255,255,.05); border:1px solid var(--border);
+  border-radius:9px; padding:.65rem .9rem; color:var(--white);
+  font-family:var(--ff); font-size:.85rem; outline:none; transition:border-color .2s;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus{ border-color:var(--silver); }
+.fg select option{ background:var(--bg2); }
+.fg textarea{ resize:vertical; min-height:100px; }
+.fmsg{ font-size:.8rem; margin-top:.8rem; padding:.5rem .8rem; border-radius:8px; display:none; }
+.fmsg.ok{ background:rgba(34,197,94,.08); border:1px solid rgba(34,197,94,.2); color:#4ade80; }
+.fmsg.err{ background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2); color:#f87171; }
+
+/* FOOTER */
+footer{ background:rgba(0,0,0,.5); border-top:1px solid var(--border); padding:2.5rem 5%; }
+.footer-grid{ display:grid; grid-template-columns:2fr 1fr 1fr; gap:3rem; margin-bottom:2rem; }
+.footer-brand strong{ font-family:var(--ffd); font-size:1.1rem; color:var(--silver2); display:block; margin-bottom:.5rem; }
+.footer-brand p{ font-size:.82rem; color:var(--muted); line-height:1.7; max-width:240px; }
+.footer-col h4{ font-size:.68rem; color:#60a5fa; letter-spacing:.12em; text-transform:uppercase; margin-bottom:.8rem; }
+.footer-col a{ display:block; font-size:.83rem; color:var(--muted); margin-bottom:.4rem; transition:color .2s; }
+.footer-col a:hover{ color:var(--silver2); }
+.footer-bottom{ border-top:1px solid var(--border); padding-top:1.2rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem; }
+.footer-bottom p{ font-size:.76rem; color:var(--muted); }
+.footer-socials{ display:flex; gap:.6rem; }
+
+/* ADMIN TRIGGER OCULTO */
+#admin-secret-zone{ display:none; }
+
+/* REVEAL */
+.rv{ opacity:0; transform:translateY(22px); transition:opacity .7s,transform .7s; }
+.rv.in{ opacity:1; transform:none; }
+
+/* MODAL PLAN */
+#plan-modal{ display:none; position:fixed; inset:0; z-index:500; background:rgba(0,0,0,.75); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:1rem; }
+#plan-modal.open{ display:flex; }
+.modal-box{ background:var(--bg2); border:1px solid var(--border2); border-radius:20px; padding:2.5rem 2.2rem; width:100%; max-width:440px; position:relative; max-height:90vh; overflow-y:auto; }
+.modal-close{ position:absolute; top:1rem; right:1rem; background:none; border:none; color:var(--muted); font-size:1.4rem; cursor:pointer; }
+.modal-plan-badge{ display:inline-block; background:rgba(185,199,217,.12); color:var(--silver2); font-size:.74rem; padding:.25rem .8rem; border-radius:50px; margin-bottom:1.2rem; letter-spacing:.06em; }
+
+@media(max-width:900px){
+  #inicio{ grid-template-columns:1fr; }
+  .hero-right{ display:none; }
+  .nav-links,.nav-cta{ display:none; }
+  .burger{ display:flex; }
+  .contact-grid{ grid-template-columns:1fr; }
+  .footer-grid{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ADMIN PANEL -->
+<div id="admin-overlay" style="display:none;position:fixed;inset:0;background:rgba(2,7,18,.96);backdrop-filter:blur(10px);z-index:1000;align-items:center;justify-content:center;">
+  <div class="admin-box" id="admin-login-box">
+    <div style="width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#1d4ed8,#0a2a6e);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#cfdef5" stroke-width="2"><path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.35C17.25 23.15 21 18.25 21 13V7L12 2z"/><path d="M9 12l2 2 4-4"/></svg>
+    </div>
+    <h2 style="color:var(--silver2);font-family:var(--ffd);margin-bottom:.3rem;">Admin Access</h2>
+    <p style="font-size:.78rem;color:var(--muted);margin-bottom:1.4rem;">Digital Bodyguard — Panel de control</p>
+    <input type="email" id="admin-user" placeholder="Correo electrónico" class="admin-input">
+    <input type="password" id="admin-pass" placeholder="Contraseña" class="admin-input">
+    <button class="login-btn" onclick="checkAdminLogin()">Ingresar</button>
+    <div id="login-error" class="error-msg"></div>
+  </div>
+  <div class="admin-box" id="admin-panel-box" style="display:none;width:440px;max-height:82vh;overflow-y:auto;">
+    <button class="adm-close" onclick="closeAdminPanel()">✕</button>
+    <h2 style="color:var(--silver2);font-family:var(--ffd);margin-bottom:1.4rem;">⚙️ Panel Admin</h2>
+    <div class="adm-section">
+      <h3>🏢 Información general</h3>
+      <label>Nombre empresa</label><input id="a-name" class="admin-input" value="Digital Bodyguard">
+      <label>Eslogan</label><input id="a-tag" class="admin-input" value="Soporte TI y Soluciones Digitales para PYMES">
+      <label>Descripción hero</label><textarea id="a-desc" rows="3" class="admin-input">Páginas web, soporte técnico remoto, automatización y herramientas digitales para hacer crecer tu negocio.</textarea>
+      <label>Teléfono</label><input id="a-phone" class="admin-input" value="+52 449 000 0000">
+      <label>Email</label><input id="a-email" class="admin-input" value="contacto@digitalbodyguard.mx">
+      <label>Ciudad</label><input id="a-city" class="admin-input" value="Aguascalientes, México">
+      <button class="adm-btn" onclick="applyGeneral()">Guardar info general</button>
+    </div>
+    <div class="adm-section">
+      <h3>📱 Redes Sociales</h3>
+      <label>WhatsApp</label><input id="a-wa" class="admin-input" value="524490000000">
+      <label>Telegram</label><input id="a-tg" class="admin-input" value="">
+      <label>Instagram</label><input id="a-ig" class="admin-input" value="">
+      <label>Facebook</label><input id="a-fb" class="admin-input" value="">
+      <label>TikTok</label><input id="a-tt" class="admin-input" value="">
+      <button class="adm-btn" onclick="applySocials()">Actualizar redes</button>
+    </div>
+    <div class="adm-section">
+      <h3>💰 Planes</h3>
+      <label>Precio Plan Básico</label><input id="a-p1" class="admin-input" value="$XXX">
+      <label>Precio Plan Pro</label><input id="a-p2" class="admin-input" value="$XXX">
+      <label>Precio Plan Full Digital</label><input id="a-p3" class="admin-input" value="$XXX">
+      <button class="adm-btn" onclick="applyPlans()">Actualizar precios</button>
+    </div>
+    <p class="admin-note" style="text-align:center;padding-top:.5rem;">Los cambios se aplican al instante.</p>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-ring">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#cfdef5" stroke-width="2"><path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.35C17.25 23.15 21 18.25 21 13V7L12 2z"/><path d="M9 12l2 2 4-4"/></svg>
+    </div>
+    <div class="logo-text">
+      <strong id="nav-name">Digital Bodyguard</strong>
+      <span>Soporte TI · Soluciones Web</span>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#inicio">Inicio</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#planes">Planes</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <a href="#planes" class="btn primary nav-cta">Ver planes</a>
+  <button class="burger" onclick="toggleMob()"><span></span><span></span><span></span></button>
+</nav>
+<div class="mob-nav" id="mobNav">
+  <a href="#inicio" onclick="toggleMob()">Inicio</a>
+  <a href="#servicios" onclick="toggleMob()">Servicios</a>
+  <a href="#planes" onclick="toggleMob()">Planes</a>
+  <a href="#contacto" onclick="toggleMob()">Contacto</a>
+</div>
+
+<!-- HERO -->
+<section id="inicio">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Soporte TI para negocios</div>
+    <h1 class="hero-title">Tu aliado <span>digital</span><br>para crecer</h1>
+    <div class="hero-tagline" id="hero-tagline">Soporte TI y Soluciones Digitales para PYMES</div>
+    <p class="hero-desc" id="hero-desc">Páginas web, soporte técnico remoto, automatización y herramientas digitales para hacer crecer tu negocio. Sin complicaciones.</p>
+    <div class="hero-actions">
+      <a href="#planes" class="btn primary">Ver planes ✦</a>
+      <a id="hero-wa" href="#" class="btn ghost" target="_blank">💬 WhatsApp</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="shield-wrap">
+      <div class="shield-outer">
+        <div class="shield-ring-1"></div>
+        <div class="shield-ring-2"></div>
+        <div class="shield-node" style="top:8px;left:50%;transform:translateX(-50%);"></div>
+        <div class="shield-node" style="bottom:30px;left:50%;transform:translateX(-50%);width:6px;height:6px;"></div>
+        <div class="shield-node" style="left:4px;top:45%;transform:translateY(-50%);width:6px;height:6px;"></div>
+        <div class="shield-node" style="right:4px;top:45%;transform:translateY(-50%);"></div>
+        <div class="shield-body">
+          <svg width="60" height="68" viewBox="0 0 64 72" fill="none">
+            <path d="M32 4L6 15v18c0 16.6 11.1 32.1 26 36 14.9-3.9 26-19.4 26-36V15L32 4z" fill="rgba(29,78,216,.35)" stroke="#cfdef5" stroke-width="1.5"/>
+            <path d="M22 36l7 7 13-14" stroke="#cfdef5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="shield-brand" id="shield-name">Digital Bodyguard</div>
+          <div class="shield-sub">SOPORTE · WEB · IA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider"/>
+
+<!-- SERVICIOS -->
+<section id="servicios" class="section dark">
+  <p class="sec-label">Lo que hacemos</p>
+  <h2 class="sec-title">Nuestros <span style="color:var(--silver2);">Servicios</span></h2>
+  <p style="color:var(--muted);font-size:.9rem;margin-top:.4rem;">Soluciones reales para negocios reales. Sin tecnicismos.</p>
+  <div class="services-grid">
+    <div class="svc-card rv"><div class="svc-icon">🌐</div><div class="svc-title">Landing Pages modernas</div><div class="svc-desc">Diseñamos tu página web profesional, rápida y optimizada para convertir visitantes en clientes.</div></div>
+    <div class="svc-card rv"><div class="svc-icon">🛠️</div><div class="svc-title">Soporte técnico remoto</div><div class="svc-desc">Resolvemos problemas de computadoras y sistemas desde cualquier lugar. Sin salir de tu oficina.</div></div>
+    <div class="svc-card rv"><div class="svc-icon">🔧</div><div class="svc-title">Mantenimiento web</div><div class="svc-desc">Actualizaciones y mejoras continuas para que tu sitio siempre esté al 100%.</div></div>
+    <div class="svc-card rv"><div class="svc-icon">⚙️</div><div class="svc-title">Automatización simple</div><div class="svc-desc">Automatizamos tareas repetitivas: correos, formularios, reportes y flujos de trabajo básicos.</div></div>
+    <div class="svc-card rv"><div class="svc-icon">💬</div><div class="svc-title">WhatsApp & Telegram</div><div class="svc-desc">Configuración de WhatsApp Business, catálogos, respuestas automáticas y Telegram para negocios.</div></div>
+    <div class="svc-card rv"><div class="svc-icon">🤖</div><div class="svc-title">IA aplicada a negocios</div><div class="svc-desc">Implementamos IA para atención al cliente, redacción y automatización. Capacitación práctica incluida.</div></div>
+  </div>
+</section>
+<hr class="divider"/>
+
+<!-- PLANES -->
+<section id="planes" class="section">
+  <p class="sec-label">Suscripción mensual</p>
+  <h2 class="sec-title">Planes <span style="color:var(--silver2);">sin sorpresas</span></h2>
+  <p style="color:var(--muted);font-size:.9rem;margin-top:.4rem;">Paga mensual, cancela cuando quieras. Todo incluido.</p>
+  <div class="plans-wrap">
+    <div class="plan rv">
+      <div class="plan-name">Escudo Básico</div>
+      <div class="plan-price" id="price-basico">$XXX<sub>/mes</sub></div>
+      <div class="plan-desc">Ideal para emprendedores que necesitan presencia digital y soporte básico.</div>
+      <ul class="plan-perks"><li>1 landing page incluida</li><li>Soporte técnico por chat</li><li>Mantenimiento web mensual</li><li>Formulario de contacto</li><li>Hosting en GitHub Pages</li></ul>
+      <button class="btn ghost" style="width:100%;justify-content:center;" onclick="openPlanModal('basico','Escudo Básico')">Empezar ahora ▸</button>
+    </div>
+    <div class="plan featured rv">
+      <div class="plan-star">★ Más Popular ★</div>
+      <div class="plan-name">Fortaleza Pro</div>
+      <div class="plan-price" id="price-pro">$XXX<sub>/mes</sub></div>
+      <div class="plan-desc">Para negocios en crecimiento que necesitan más velocidad y funciones.</div>
+      <ul class="plan-perks"><li>Todo del plan Básico</li><li>Soporte prioritario 24h</li><li>Firebase + formularios avanzados</li><li>WhatsApp Business config</li><li>1 automatización simple</li><li>Reporte mensual</li></ul>
+      <button class="btn primary" style="width:100%;justify-content:center;" onclick="openPlanModal('pro','Fortaleza Pro')">El más elegido ▸</button>
+    </div>
+    <div class="plan rv">
+      <div class="plan-name">Full Digital</div>
+      <div class="plan-price" id="price-full">$XXX<sub>/mes</sub></div>
+      <div class="plan-desc">Solución completa para negocios que quieren digitalización total.</div>
+      <ul class="plan-perks"><li>Todo del plan Pro</li><li>Automatizaciones ilimitadas</li><li>IA básica integrada</li><li>Capacitación mensual (2h)</li><li>Panel admin editable</li><li>Redes sociales config</li></ul>
+      <button class="btn ghost" style="width:100%;justify-content:center;" onclick="openPlanModal('full','Full Digital')">Solicitar propuesta ▸</button>
+    </div>
+  </div>
+</section>
+<hr class="divider"/>
+
+<!-- PROCESO -->
+<section class="section dark">
+  <p class="sec-label">Simple y rápido</p>
+  <h2 class="sec-title">Cómo <span style="color:var(--silver2);">comenzamos</span></h2>
+  <div class="process-steps">
+    <div class="step rv"><div class="step-num">01</div><div class="step-title">Diagnóstico</div><div class="step-desc">Evaluamos el estado digital de tu negocio sin costo ni compromiso.</div></div>
+    <div class="step rv"><div class="step-num">02</div><div class="step-title">Propuesta</div><div class="step-desc">Te presentamos un plan a la medida con precio claro y sin sorpresas.</div></div>
+    <div class="step rv"><div class="step-num">03</div><div class="step-title">Implementación</div><div class="step-desc">Activamos las soluciones en tu negocio sin interrumpir operaciones.</div></div>
+    <div class="step rv"><div class="step-num">04</div><div class="step-title">Soporte continuo</div><div class="step-desc">Te acompañamos mes a mes con mantenimiento y soporte incluido.</div></div>
+  </div>
+</section>
+<hr class="divider"/>
+
+<!-- CONTACTO -->
+<section id="contacto" class="section dark">
+  <p class="sec-label">Hablemos</p>
+  <h2 class="sec-title">Contáctanos <span style="color:var(--silver2);">hoy</span></h2>
+  <div class="contact-grid">
+    <div class="rv">
+      <div class="contact-info-label">Teléfono</div>
+      <div class="contact-info-val"><a id="ci-phone" href="#">+52 449 000 0000</a></div>
+      <div class="contact-info-label">Email</div>
+      <div class="contact-info-val"><a id="ci-email" href="#">contacto@digitalbodyguard.mx</a></div>
+      <div class="contact-info-label">Ciudad</div>
+      <div class="contact-info-val" id="ci-city">Aguascalientes, México</div>
+      <div class="social-redes-label">Búscanos en nuestras redes</div>
+      <div class="social-redes-sub">Síguenos y mantente al tanto de novedades y consejos digitales.</div>
+      <div class="social-icons-row">
+        <a id="soc-wa" href="#" target="_blank" class="soc-icon-a" style="background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.3);color:#25d366;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.122 1.528 5.858L.055 23.27a.5.5 0 00.61.676l5.57-1.446A11.938 11.938 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></a>
+        <a id="soc-tg" href="#" target="_blank" class="soc-icon-a" style="background:rgba(42,171,238,.1);border:1px solid rgba(42,171,238,.3);color:#2aabee;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.738l-2.94-.916c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.194 1.006.131.943.811z"/></svg></a>
+        <a id="soc-ig" href="#" target="_blank" class="soc-icon-a" style="background:rgba(225,48,108,.1);border:1px solid rgba(225,48,108,.3);color:#e1306c;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0z"/></svg></a>
+        <a id="soc-fb" href="#" target="_blank" class="soc-icon-a" style="background:rgba(24,119,242,.1);border:1px solid rgba(24,119,242,.3);color:#1877f2;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg></a>
+        <a id="soc-tt" href="#" target="_blank" class="soc-icon-a" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:#f0f4fa;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg></a>
+      </div>
+      <div class="wa-box"><h4>¿Prefieres WhatsApp?</h4><p>Escríbenos directamente y te respondemos en minutos.</p><a id="wa-contact" href="#" target="_blank" class="btn wa" style="font-size:.82rem;padding:.55rem 1.3rem;">💬 Abrir WhatsApp</a></div>
+    </div>
+    <div class="rv contact-form-card">
+      <div class="form-title">Envíanos un mensaje</div>
+      <div class="form-sub">Te respondemos en menos de 24 horas hábiles.</div>
+      <div class="fg"><label>Nombre *</label><input type="text" id="c-name"/></div>
+      <div class="fg"><label>Empresa</label><input type="text" id="c-company"/></div>
+      <div class="fg"><label>Email *</label><input type="email" id="c-email"/></div>
+      <div class="fg"><label>Teléfono</label><input type="tel" id="c-phone"/></div>
+      <div class="fg"><label>¿Qué necesitas?</label><select id="c-service"><option>Landing page / Sitio web</option><option>Soporte técnico remoto</option><option>Mantenimiento web</option><option>Automatización de tareas</option><option>WhatsApp Business</option><option>Capacitación en IA</option><option>Otro</option></select></div>
+      <div class="fg"><label>Cuéntanos tu problema o necesidad *</label><textarea id="c-msg"></textarea></div>
+      <div style="display:flex;gap:.7rem;flex-wrap:wrap;"><button class="btn primary" onclick="submitContact()" style="flex:1;">Enviar ▸</button><a id="form-wa" href="#" target="_blank" class="btn ghost" style="flex:1;">💬 WhatsApp</a></div>
+      <div id="c-result" class="fmsg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand"><strong id="footer-name">Digital Bodyguard</strong><p>Soporte TI y soluciones digitales para pequeños negocios y emprendedores en México.</p><div class="footer-socials" id="footer-soc-row"></div></div>
+    <div class="footer-col"><h4>Servicios</h4><a href="#servicios">Landing pages</a><a href="#servicios">Soporte técnico</a><a href="#servicios">Automatización</a><a href="#planes">Ver planes</a></div>
+    <div class="footer-col"><h4>Empresa</h4><a href="#contacto">Contacto</a></div>
+  </div>
+  <div class="footer-bottom"><p>© <span id="year"></span> Digital Bodyguard. Todos los derechos reservados. Hecho en México 🇲🇽</p><span style="font-size:.76rem;color:var(--silver-dark);">Soporte TI · Soluciones Web</span></div>
+</footer>
+
+<!-- MODAL PLAN -->
+<div id="plan-modal"><div class="modal-box"><button class="modal-close" onclick="closePlanModal()">✕</button><div style="font-family:var(--ffd);font-size:1.3rem;color:var(--silver2);margin-bottom:.3rem;">Quiero este plan</div><div class="modal-plan-badge" id="modal-plan-name">—</div><div class="form-sub">Te contactamos en menos de 2 horas hábiles.</div><div class="fg"><label>Nombre *</label><input id="s-name" type="text"/></div><div class="fg"><label>Empresa</label><input id="s-company" type="text"/></div><div class="fg"><label>Email *</label><input id="s-email" type="email"/></div><div class="fg"><label>Teléfono</label><input id="s-phone" type="tel"/></div><div class="fg"><label>Nota adicional</label><textarea id="s-msg" style="min-height:70px;"></textarea></div><input type="hidden" id="s-plan"/><button class="btn primary" onclick="submitPlan()" style="width:100%;">Solicitar ahora ▸</button><div id="s-result" class="fmsg"></div></div></div>
+
+<script>
+const STATE = {
+  company: 'Digital Bodyguard',
+  tagline: 'Soporte TI y Soluciones Digitales para PYMES',
+  desc: 'Páginas web, soporte técnico remoto, automatización y herramientas digitales para hacer crecer tu negocio. Sin complicaciones.',
+  phone: '+52 449 000 0000',
+  email: 'contacto@digitalbodyguard.mx',
+  city: 'Aguascalientes, México',
+  wa: '524490000000',
+  tg: '', ig: '', fb: '', tt: '',
+  prices: { basico:'$XXX', pro:'$XXX', full:'$XXX' }
+};
+
+const ADMIN_EMAIL = 'admin@digitalbodyguard.mx';
+const ADMIN_PASS  = 'DBG2025!';
+let adminLogged = false;
+
+function g(id){ return document.getElementById(id); }
+function gv(id){ return g(id)?.value?.trim()||''; }
+function setText(id,txt){ const e=g(id); if(e) e.textContent=txt; }
+function setMsg(el,type,txt){ el.className='fmsg '+(type==='ok'?'ok':'err'); el.textContent=txt; el.style.display='block'; }
+
+function checkAdminLogin(){
+  const u = g('admin-user').value.trim();
+  const p = g('admin-pass').value;
+  const err = g('login-error');
+  if(u === ADMIN_EMAIL && p === ADMIN_PASS){
+    adminLogged = true;
+    g('admin-login-box').style.display = 'none';
+    g('admin-panel-box').style.display = 'block';
+    loadAdminFields();
+  } else { err.textContent = '❌ Credenciales incorrectas.'; }
+}
+function loadAdminFields(){
+  g('a-name').value = STATE.company;
+  g('a-tag').value = STATE.tagline;
+  g('a-desc').value = STATE.desc;
+  g('a-phone').value = STATE.phone;
+  g('a-email').value = STATE.email;
+  g('a-city').value = STATE.city;
+  g('a-wa').value = STATE.wa;
+  g('a-tg').value = STATE.tg;
+  g('a-ig').value = STATE.ig;
+  g('a-fb').value = STATE.fb;
+  g('a-tt').value = STATE.tt;
+  g('a-p1').value = STATE.prices.basico;
+  g('a-p2').value = STATE.prices.pro;
+  g('a-p3').value = STATE.prices.full;
+}
+function closeAdminPanel(){ g('admin-overlay').style.display = 'none'; adminLogged = false; }
+function applyGeneral(){
+  if(!adminLogged) return;
+  STATE.company = g('a-name').value.trim();
+  STATE.tagline = g('a-tag').value.trim();
+  STATE.desc = g('a-desc').value.trim();
+  STATE.phone = g('a-phone').value.trim();
+  STATE.email = g('a-email').value.trim();
+  STATE.city = g('a-city').value.trim();
+  applyToPage();
+  alert('✅ Info general actualizada');
+}
+function applySocials(){
+  if(!adminLogged) return;
+  STATE.wa = g('a-wa').value.trim();
+  STATE.tg = g('a-tg').value.trim();
+  STATE.ig = g('a-ig').value.trim();
+  STATE.fb = g('a-fb').value.trim();
+  STATE.tt = g('a-tt').value.trim();
+  applyToPage();
+  alert('✅ Redes actualizadas');
+}
+function applyPlans(){
+  if(!adminLogged) return;
+  STATE.prices.basico = g('a-p1').value.trim();
+  STATE.prices.pro = g('a-p2').value.trim();
+  STATE.prices.full = g('a-p3').value.trim();
+  g('price-basico').innerHTML = STATE.prices.basico + '<sub>/mes</sub>';
+  g('price-pro').innerHTML = STATE.prices.pro + '<sub>/mes</sub>';
+  g('price-full').innerHTML = STATE.prices.full + '<sub>/mes</sub>';
+  alert('✅ Precios actualizados');
+}
+function applyToPage(){
+  setText('nav-name', STATE.company);
+  setText('hero-tagline', STATE.tagline);
+  setText('hero-desc', STATE.desc);
+  setText('shield-name', STATE.company);
+  setText('footer-name', STATE.company);
+  const phoneEl = g('ci-phone');
+  if(phoneEl){ phoneEl.textContent=STATE.phone; phoneEl.href='tel:'+STATE.phone.replace(/\s/g,''); }
+  const emailEl = g('ci-email');
+  if(emailEl){ emailEl.textContent=STATE.email; emailEl.href='mailto:'+STATE.email; }
+  setText('ci-city', STATE.city);
+  const waMsg = encodeURIComponent('Hola, me interesa Digital Bodyguard. ¿Me pueden dar información?');
+  const waUrl = `https://wa.me/${STATE.wa.replace(/[^0-9]/g,'')}?text=${waMsg}`;
+  ['hero-wa','wa-contact','form-wa'].forEach(id=>{ g(id)&&(g(id).href=waUrl); });
+  if(STATE.wa) g('soc-wa').href = waUrl;
+  if(STATE.tg){ const tgu=STATE.tg.startsWith('+')?`https://t.me/${STATE.tg.slice(1)}`:`https://t.me/${STATE.tg.replace('@','')}`; g('soc-tg').href=tgu; }
+  if(STATE.ig) g('soc-ig').href = `https://instagram.com/${STATE.ig.replace('@','')}`;
+  if(STATE.fb) g('soc-fb').href = `https://facebook.com/${STATE.fb.replace('@','')}`;
+  if(STATE.tt) g('soc-tt').href = `https://tiktok.com/@${STATE.tt.replace('@','')}`;
+  buildFooterSocials();
+}
+function buildFooterSocials(){
+  const row = g('footer-soc-row'); if(!row) return;
+  const waUrl = `https://wa.me/${STATE.wa.replace(/[^0-9]/g,'')}`;
+  const tgUrl = STATE.tg ? (STATE.tg.startsWith('+')?`https://t.me/${STATE.tg.slice(1)}`:`https://t.me/${STATE.tg.replace('@','')}`) : '#';
+  const igUrl = STATE.ig ? `https://instagram.com/${STATE.ig.replace('@','')}` : '#';
+  const fbUrl = STATE.fb ? `https://facebook.com/${STATE.fb.replace('@','')}` : '#';
+  const ttUrl = STATE.tt ? `https://tiktok.com/@${STATE.tt.replace('@','')}` : '#';
+  row.innerHTML = `<a href="${waUrl}" target="_blank" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);color:#25d366;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.122 1.528 5.858L.055 23.27a.5.5 0 00.61.676l5.57-1.446A11.938 11.938 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></a>
+  <a href="${tgUrl}" target="_blank" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);color:#2aabee;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.19 13.738l-2.94-.916c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.194 1.006.131.943.811z"/></svg></a>
+  <a href="${igUrl}" target="_blank" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);color:#e1306c;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0z"/></svg></a>
+  <a href="${fbUrl}" target="_blank" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);color:#1877f2;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg></a>
+  <a href="${ttUrl}" target="_blank" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);color:#f0f4fa;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg></a>`;
+}
+function submitContact(){
+  const name=gv('c-name'), email=gv('c-email'), msg=gv('c-msg');
+  const res=g('c-result');
+  if(!name||!email||!msg){ setMsg(res,'err','Completa los campos requeridos (*).'); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ setMsg(res,'err','Correo inválido.'); return; }
+  setMsg(res,'ok',`✅ ¡Gracias ${name}! Te respondemos pronto.`);
+  ['c-name','c-company','c-email','c-phone','c-msg'].forEach(id=>{ g(id)&&(g(id).value=''); });
+}
+function openPlanModal(key, name){ g('s-plan').value = key; g('modal-plan-name').textContent = name; g('plan-modal').style.display='flex'; }
+function closePlanModal(){ g('plan-modal').style.display='none'; }
+function submitPlan(){
+  const name=gv('s-name'), email=gv('s-email');
+  const res=g('s-result');
+  if(!name||!email){ setMsg(res,'err','Nombre y email requeridos.'); return; }
+  setMsg(res,'ok',`✅ ¡Perfecto ${name}! Te contactamos pronto.`);
+  setTimeout(()=>closePlanModal(), 3000);
+}
+function toggleMob(){ const m=g('mobNav'); m.style.display=m.style.display==='flex'?'none':'flex'; }
+document.getElementById('year').textContent = new Date().getFullYear();
+applyToPage();
+const observer = new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('in');observer.unobserve(e.target);} }),{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>observer.observe(el));
+(function(){
+  const btn = document.createElement('button');
+  btn.textContent = '⚙️ Admin';
+  btn.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;z-index:400;background:rgba(7,18,42,.92);border:1px solid rgba(185,199,217,.3);color:var(--silver2);border-radius:50px;padding:.45rem 1.1rem;font-size:.76rem;cursor:pointer;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .3s,transform .3s;';
+  document.body.appendChild(btn);
+  btn.onclick = () => { g('admin-overlay').style.display='flex'; hideBtn(); };
+  let visible=false, timer;
+  function showBtn(){ clearTimeout(timer); visible=true; btn.style.opacity='1'; btn.style.pointerEvents='auto'; btn.style.transform='translateY(0)'; timer=setTimeout(hideBtn,4000); }
+  function hideBtn(){ visible=false; btn.style.opacity='0'; btn.style.pointerEvents='none'; btn.style.transform='translateY(8px)'; }
+  document.addEventListener('keydown',e=>{ if(e.ctrlKey&&e.shiftKey&&e.key==='A'){ e.preventDefault(); visible?hideBtn():showBtn(); } });
+  let taps=0, tapT;
+  document.querySelector('footer')?.addEventListener('click',()=>{ taps++; clearTimeout(tapT); if(taps>=5){ taps=0; visible?hideBtn():showBtn(); } tapT=setTimeout(()=>taps=0,1500); });
+})();
+</script>
+</body>
+</html>
+
