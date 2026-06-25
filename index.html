@@ -79,6 +79,11 @@ nav{
   background:linear-gradient(135deg,var(--silver),var(--silver-dark));
   color:#03070f; padding:.5rem 1.4rem; border-radius:50px;
   box-shadow:0 0 16px rgba(185,199,217,.3); font-weight:600; font-size:.83rem;
+  display:inline-flex; align-items:center; gap:.5rem;
+}
+.nav-cta::before{
+  content:"🛡️";
+  font-size:.85rem;
 }
 .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:.3rem;}
 .burger span{width:22px;height:1.5px;background:var(--silver2);display:block;}
@@ -111,7 +116,7 @@ h1.hero-title span{ color:#60a5fa; }
 .hero-desc{ color:var(--muted); line-height:1.75; margin-bottom:2rem; max-width:450px; font-size:.93rem; }
 .hero-actions{ display:flex; gap:1rem; flex-wrap:wrap; }
 
-/* SHIELD VISUAL */
+/* SHIELD VISUAL - sin línea de escaneo */
 .shield-wrap{
   display:flex; align-items:center; justify-content:center;
   animation:float 6s ease-in-out infinite;
@@ -134,12 +139,6 @@ h1.hero-title span{ color:#60a5fa; }
 .shield-body svg{ filter:drop-shadow(0 0 14px rgba(96,165,250,.7)); }
 .shield-brand{ font-family:var(--ffd); font-size:1rem; font-weight:600; color:var(--silver2); letter-spacing:.1em; text-transform:uppercase; }
 .shield-sub{ font-size:.6rem; color:#1d4ed8; letter-spacing:.14em; text-transform:uppercase; }
-.shield-scan{
-  position:absolute; left:10%; right:10%; height:1px;
-  background:linear-gradient(90deg,transparent,rgba(185,199,217,.4),transparent);
-  animation:scan 3s ease-in-out infinite;
-}
-@keyframes scan{ 0%,100%{top:15%;opacity:0;} 50%{top:78%;opacity:1;} }
 .shield-node{
   position:absolute; width:8px; height:8px; border-radius:50%;
   background:var(--silver); box-shadow:0 0 8px var(--silver);
@@ -172,7 +171,7 @@ hr.divider{ border:none; height:1px; background:linear-gradient(90deg,transparen
 .svc-desc{ font-size:.85rem; color:var(--muted); line-height:1.75; }
 
 /* PLANES */
-.plans-wrap{ display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:1.5rem; margin-top:2.5rem; max-width:960px; }
+.plans-wrap{ display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:1.5rem; margin-top:2.5rem; max-width:960px; margin-left:auto; margin-right:auto; }
 .plan{ background:var(--card); border:1px solid var(--border); border-radius:24px; padding:2rem; position:relative; }
 .plan.featured{ border-color:var(--border2); box-shadow:0 8px 32px rgba(0,0,0,.35); }
 .plan-star{ position:absolute; top:-13px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,var(--silver),var(--silver-dark)); color:#03070f; font-size:.7rem; padding:.3rem 1rem; border-radius:50px; font-weight:bold; white-space:nowrap; }
@@ -184,17 +183,6 @@ hr.divider{ border:none; height:1px; background:linear-gradient(90deg,transparen
 .plan-perks li{ font-size:.85rem; color:var(--muted); padding:.4rem 0; display:flex; gap:.6rem; align-items:center; border-bottom:1px solid rgba(255,255,255,.04); }
 .plan-perks li:last-child{ border-bottom:none; }
 .plan-perks li::before{ content:'✓'; color:var(--silver2); font-weight:700; flex-shrink:0; }
-
-/* PORTAFOLIO con enlaces */
-.portfolio-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; margin-top:2.5rem; }
-.port-card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem; transition:border-color .3s; }
-.port-card:hover{ border-color:var(--border2); }
-.port-cat{ font-size:.68rem; color:#60a5fa; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.5rem; }
-.port-title{ font-family:var(--ffd); font-size:1.05rem; color:var(--silver2); margin-bottom:.4rem; }
-.port-desc{ font-size:.82rem; color:var(--muted); line-height:1.7; margin-bottom:.8rem; }
-.port-link{ display:inline-flex; align-items:center; gap:.5rem; background:rgba(29,78,216,.15); border:1px solid var(--border); border-radius:50px; padding:.35rem 1rem; font-size:.7rem; color:var(--silver2); text-decoration:none; transition:all .2s; margin-top:.5rem; }
-.port-link:hover{ background:rgba(29,78,216,.3); border-color:var(--border2); transform:translateY(-1px); }
-.port-link svg{ width:14px; height:14px; }
 
 /* PROCESO */
 .process-steps{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:2rem; margin-top:2.5rem; }
@@ -275,11 +263,11 @@ footer{ background:rgba(0,0,0,.5); border-top:1px solid var(--border); padding:2
 </head>
 <body>
 
-<!-- ADMIN PANEL (se mantiene igual, por brevedad se omite parte del contenido repetitivo) -->
+<!-- ADMIN PANEL -->
 <div id="admin-overlay" style="display:none;position:fixed;inset:0;background:rgba(2,7,18,.96);backdrop-filter:blur(10px);z-index:1000;align-items:center;justify-content:center;">
   <div class="admin-box" id="admin-login-box">
     <div style="width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#1d4ed8,#0a2a6e);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#cfdef5" stroke-width="2" stroke-linecap="round"><path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.35C17.25 23.15 21 18.25 21 13V7L12 2z"/><path d="M9 12l2 2 4-4"/></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#cfdef5" stroke-width="2"><path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.35C17.25 23.15 21 18.25 21 13V7L12 2z"/><path d="M9 12l2 2 4-4"/></svg>
     </div>
     <h2 style="color:var(--silver2);font-family:var(--ffd);margin-bottom:.3rem;">Admin Access</h2>
     <p style="font-size:.78rem;color:var(--muted);margin-bottom:1.4rem;">Digital Bodyguard — Panel de control</p>
@@ -296,7 +284,7 @@ footer{ background:rgba(0,0,0,.5); border-top:1px solid var(--border); padding:2
       <label>Nombre empresa</label><input id="a-name" class="admin-input" value="Digital Bodyguard">
       <label>Eslogan</label><input id="a-tag" class="admin-input" value="Soporte TI y Soluciones Digitales para PYMES">
       <label>Descripción hero</label><textarea id="a-desc" rows="3" class="admin-input">Páginas web, soporte técnico remoto, automatización y herramientas digitales para hacer crecer tu negocio.</textarea>
-      <label>Teléfono</label><input id="a-phone" class="admin-input" value="+52 449 000 0000">
+      <label>Teléfono</label><input id="a-phone" class="admin-input" value="+52 4494066248">
       <label>Email</label><input id="a-email" class="admin-input" value="contacto@digitalbodyguard.mx">
       <label>Ciudad</label><input id="a-city" class="admin-input" value="Aguascalientes, México">
       <button class="adm-btn" onclick="applyGeneral()">Guardar info general</button>
@@ -312,18 +300,10 @@ footer{ background:rgba(0,0,0,.5); border-top:1px solid var(--border); padding:2
     </div>
     <div class="adm-section">
       <h3>💰 Planes</h3>
-      <label>Precio Plan Básico</label><input id="a-p1" class="admin-input" value="$XXX">
-      <label>Precio Plan Pro</label><input id="a-p2" class="admin-input" value="$XXX">
-      <label>Precio Plan Full Digital</label><input id="a-p3" class="admin-input" value="$XXX">
+      <label>Precio Plan Básico</label><input id="a-p1" class="admin-input" value="$1500">
+      <label>Precio Plan Pro</label><input id="a-p2" class="admin-input" value="$3500">
+      <label>Precio Plan Full Digital</label><input id="a-p3" class="admin-input" value="$5000">
       <button class="adm-btn" onclick="applyPlans()">Actualizar precios</button>
-    </div>
-    <div class="adm-section">
-      <h3>🔗 Portafolio - Enlaces</h3>
-      <label>Proyecto 1 - URL</label><input id="port-url1" class="admin-input" value="https://ejemplo.com/restaurante">
-      <label>Proyecto 2 - URL</label><input id="port-url2" class="admin-input" value="https://ejemplo.com/boutique">
-      <label>Proyecto 3 - URL</label><input id="port-url3" class="admin-input" value="https://ejemplo.com/taller">
-      <label>Proyecto 4 - URL</label><input id="port-url4" class="admin-input" value="https://ejemplo.com/contabilidad">
-      <button class="adm-btn" onclick="applyPortfolioLinks()">Actualizar enlaces</button>
     </div>
     <p class="admin-note" style="text-align:center;padding-top:.5rem;">Los cambios se aplican al instante.</p>
   </div>
@@ -344,7 +324,6 @@ footer{ background:rgba(0,0,0,.5); border-top:1px solid var(--border); padding:2
     <li><a href="#inicio">Inicio</a></li>
     <li><a href="#servicios">Servicios</a></li>
     <li><a href="#planes">Planes</a></li>
-    <li><a href="#portafolio">Portafolio</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ul>
   <a href="#planes" class="btn primary nav-cta">Ver planes</a>
@@ -354,7 +333,6 @@ footer{ background:rgba(0,0,0,.5); border-top:1px solid var(--border); padding:2
   <a href="#inicio" onclick="toggleMob()">Inicio</a>
   <a href="#servicios" onclick="toggleMob()">Servicios</a>
   <a href="#planes" onclick="toggleMob()">Planes</a>
-  <a href="#portafolio" onclick="toggleMob()">Portafolio</a>
   <a href="#contacto" onclick="toggleMob()">Contacto</a>
 </div>
 
@@ -375,7 +353,10 @@ footer{ background:rgba(0,0,0,.5); border-top:1px solid var(--border); padding:2
       <div class="shield-outer">
         <div class="shield-ring-1"></div>
         <div class="shield-ring-2"></div>
-        <div class="shield-scan"></div>
+        <div class="shield-node" style="top:8px;left:50%;transform:translateX(-50%);"></div>
+        <div class="shield-node" style="bottom:30px;left:50%;transform:translateX(-50%);width:6px;height:6px;"></div>
+        <div class="shield-node" style="left:4px;top:45%;transform:translateY(-50%);width:6px;height:6px;"></div>
+        <div class="shield-node" style="right:4px;top:45%;transform:translateY(-50%);"></div>
         <div class="shield-body">
           <svg width="60" height="68" viewBox="0 0 64 72" fill="none">
             <path d="M32 4L6 15v18c0 16.6 11.1 32.1 26 36 14.9-3.9 26-19.4 26-36V15L32 4z" fill="rgba(29,78,216,.35)" stroke="#cfdef5" stroke-width="1.5"/>
@@ -451,39 +432,6 @@ footer{ background:rgba(0,0,0,.5); border-top:1px solid var(--border); padding:2
 </section>
 <hr class="divider"/>
 
-<!-- PORTAFOLIO con enlaces -->
-<section id="portafolio" class="section">
-  <p class="sec-label">Trabajos recientes</p>
-  <h2 class="sec-title">Nuestro <span style="color:var(--silver2);">Portafolio</span></h2>
-  <div class="portfolio-grid" id="portfolio-grid">
-    <div class="port-card rv">
-      <div class="port-cat">Landing Page</div>
-      <div class="port-title">Restaurante Don Pepe</div>
-      <div class="port-desc">Sitio con menú digital, reservaciones y formulario de contacto.</div>
-      <a href="#" id="port-link1" class="port-link" target="_blank">🔗 Ver proyecto <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-    </div>
-    <div class="port-card rv">
-      <div class="port-cat">Tienda Digital</div>
-      <div class="port-title">Boutique Valeria</div>
-      <div class="port-desc">Catálogo de productos con pedidos por WhatsApp.</div>
-      <a href="#" id="port-link2" class="port-link" target="_blank">🔗 Ver proyecto <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-    </div>
-    <div class="port-card rv">
-      <div class="port-cat">Automatización</div>
-      <div class="port-title">Taller Mecánico Rápido</div>
-      <div class="port-desc">Sistema de citas por WhatsApp con confirmación automática.</div>
-      <a href="#" id="port-link3" class="port-link" target="_blank">🔗 Ver proyecto <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-    </div>
-    <div class="port-card rv">
-      <div class="port-cat">Landing Page</div>
-      <div class="port-title">Despacho Contable GC</div>
-      <div class="port-desc">Página profesional con formulario de contacto y servicios.</div>
-      <a href="#" id="port-link4" class="port-link" target="_blank">🔗 Ver proyecto <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
-    </div>
-  </div>
-</section>
-<hr class="divider"/>
-
 <!-- CONTACTO -->
 <section id="contacto" class="section dark">
   <p class="sec-label">Hablemos</p>
@@ -491,9 +439,9 @@ footer{ background:rgba(0,0,0,.5); border-top:1px solid var(--border); padding:2
   <div class="contact-grid">
     <div class="rv">
       <div class="contact-info-label">Teléfono</div>
-      <div class="contact-info-val"><a id="ci-phone" href="#">+52 449 000 0000</a></div>
+      <div class="contact-info-val"><a id="ci-phone" href="#">+52 449 406 6248</a></div>
       <div class="contact-info-label">Email</div>
-      <div class="contact-info-val"><a id="ci-email" href="#">contacto@digitalbodyguard.mx</a></div>
+      <div class="contact-info-val"><a id="ci-email" href="#">angelofficial097@gmail.com</a></div>
       <div class="contact-info-label">Ciudad</div>
       <div class="contact-info-val" id="ci-city">Aguascalientes, México</div>
       <div class="social-redes-label">Búscanos en nuestras redes</div>
@@ -527,7 +475,7 @@ footer{ background:rgba(0,0,0,.5); border-top:1px solid var(--border); padding:2
   <div class="footer-grid">
     <div class="footer-brand"><strong id="footer-name">Digital Bodyguard</strong><p>Soporte TI y soluciones digitales para pequeños negocios y emprendedores en México.</p><div class="footer-socials" id="footer-soc-row"></div></div>
     <div class="footer-col"><h4>Servicios</h4><a href="#servicios">Landing pages</a><a href="#servicios">Soporte técnico</a><a href="#servicios">Automatización</a><a href="#planes">Ver planes</a></div>
-    <div class="footer-col"><h4>Empresa</h4><a href="#portafolio">Portafolio</a><a href="#contacto">Contacto</a></div>
+    <div class="footer-col"><h4>Empresa</h4><a href="#contacto">Contacto</a></div>
   </div>
   <div class="footer-bottom"><p>© <span id="year"></span> Digital Bodyguard. Todos los derechos reservados. Hecho en México 🇲🇽</p><span style="font-size:.76rem;color:var(--silver-dark);">Soporte TI · Soluciones Web</span></div>
 </footer>
@@ -540,13 +488,12 @@ const STATE = {
   company: 'Digital Bodyguard',
   tagline: 'Soporte TI y Soluciones Digitales para PYMES',
   desc: 'Páginas web, soporte técnico remoto, automatización y herramientas digitales para hacer crecer tu negocio. Sin complicaciones.',
-  phone: '+52 449 000 0000',
+  phone: '+52 4494066248',
   email: 'contacto@digitalbodyguard.mx',
   city: 'Aguascalientes, México',
   wa: '524490000000',
   tg: '', ig: '', fb: '', tt: '',
-  prices: { basico:'$XXX', pro:'$XXX', full:'$XXX' },
-  portfolioLinks: ['https://ejemplo.com/restaurante', 'https://ejemplo.com/boutique', 'https://ejemplo.com/taller', 'https://ejemplo.com/contabilidad']
+  prices: { basico:'$XXX', pro:'$XXX', full:'$XXX' }
 };
 
 const ADMIN_EMAIL = 'admin@digitalbodyguard.mx';
@@ -584,7 +531,6 @@ function loadAdminFields(){
   g('a-p1').value = STATE.prices.basico;
   g('a-p2').value = STATE.prices.pro;
   g('a-p3').value = STATE.prices.full;
-  for(let i=1;i<=4;i++){ if(g(`port-url${i}`)) g(`port-url${i}`).value = STATE.portfolioLinks[i-1]; }
 }
 function closeAdminPanel(){ g('admin-overlay').style.display = 'none'; adminLogged = false; }
 function applyGeneral(){
@@ -618,15 +564,6 @@ function applyPlans(){
   g('price-full').innerHTML = STATE.prices.full + '<sub>/mes</sub>';
   alert('✅ Precios actualizados');
 }
-function applyPortfolioLinks(){
-  if(!adminLogged) return;
-  for(let i=1;i<=4;i++){ STATE.portfolioLinks[i-1] = g(`port-url${i}`).value.trim(); }
-  updatePortfolioLinks();
-  alert('✅ Enlaces del portafolio actualizados');
-}
-function updatePortfolioLinks(){
-  for(let i=1;i<=4;i++){ const link = g(`port-link${i}`); if(link) link.href = STATE.portfolioLinks[i-1]; }
-}
 function applyToPage(){
   setText('nav-name', STATE.company);
   setText('hero-tagline', STATE.tagline);
@@ -646,7 +583,6 @@ function applyToPage(){
   if(STATE.ig) g('soc-ig').href = `https://instagram.com/${STATE.ig.replace('@','')}`;
   if(STATE.fb) g('soc-fb').href = `https://facebook.com/${STATE.fb.replace('@','')}`;
   if(STATE.tt) g('soc-tt').href = `https://tiktok.com/@${STATE.tt.replace('@','')}`;
-  updatePortfolioLinks();
   buildFooterSocials();
 }
 function buildFooterSocials(){
@@ -680,7 +616,6 @@ function submitPlan(){
   setTimeout(()=>closePlanModal(), 3000);
 }
 function toggleMob(){ const m=g('mobNav'); m.style.display=m.style.display==='flex'?'none':'flex'; }
-function toggleFAQ(el){ const item = el.closest('.faq-item'); if(item) item.classList.toggle('open'); }
 document.getElementById('year').textContent = new Date().getFullYear();
 applyToPage();
 const observer = new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('in');observer.unobserve(e.target);} }),{threshold:.1});
@@ -701,4 +636,3 @@ document.querySelectorAll('.rv').forEach(el=>observer.observe(el));
 </script>
 </body>
 </html>
-
